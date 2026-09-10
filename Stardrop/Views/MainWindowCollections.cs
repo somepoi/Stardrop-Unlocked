@@ -997,6 +997,11 @@ namespace Stardrop.Views
             var downloadLink = await Nexus.Client.GetFileDownloadLink(entry.NexusModId.Value, entry.NexusFileId.Value, serverName: EnumParser.GetDescription(Program.settings.PreferredNexusServer));
             if (String.IsNullOrEmpty(downloadLink))
             {
+                if (Program.settings.NexusDetails is not null && Program.settings.NexusDetails.IsPremium is false)
+                {
+                    var slowDownloadUrl = NexusClient.GetSlowDownloadUrl(entry.NexusModId.Value, entry.NexusFileId.Value);
+                    Toolkit.OpenBrowser(slowDownloadUrl);
+                }
                 entry.Status = CollectionModStatus.AwaitingManualDownload;
                 return null;
             }

@@ -239,7 +239,7 @@ namespace Stardrop.Utilities.External
             switch (entry.SourceType)
             {
                 case CollectionModSourceType.Nexus:
-                    return isPremium ? CollectionModStatus.Pending : CollectionModStatus.AwaitingManualDownload;
+                    return CollectionModStatus.Pending;
                 case CollectionModSourceType.Bundle:
                     // Bundled files travel inside the collection archive, so they are already on disk
                     return CollectionModStatus.Pending;
