@@ -748,6 +748,15 @@ namespace Stardrop.Utilities.External
             return null;
         }
 
+        /// <summary>
+        /// Returns a URL that, when opened in a browser, lets a free user start a slow download.
+        /// The browser will fire an nxm:// link back to Stardrop once the user clicks through.
+        /// </summary>
+        public static string GetSlowDownloadUrl(int modId, int fileId)
+        {
+            return $"https://www.nexusmods.com/stardewvalley/mods/{modId}?tab=files&file_id={fileId}&nmm=1";
+        }
+
         private void UpdateRequestCounts(HttpResponseHeaders headers)
         {
             if (headers.TryGetValues("x-rl-daily-limit", out var limitValues) && Int32.TryParse(limitValues.First(), out int dailyLimit))

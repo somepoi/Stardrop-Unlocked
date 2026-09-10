@@ -2036,9 +2036,8 @@ namespace Stardrop.Views
                 return;
             }
 
-            if (Program.settings.NexusDetails is null || Program.settings.NexusDetails.IsPremium is false)
+            if (Program.settings.NexusDetails is null)
             {
-                await CreateWarningWindow(Program.translation.Get("ui.warning.download_without_premium"), Program.translation.Get("internal.ok"));
                 return;
             }
             else if (_viewModel.Mods.Where(m => String.IsNullOrEmpty(m.InstallStatus) is false).Count() == 0)
@@ -2742,7 +2741,7 @@ namespace Stardrop.Views
                 }
 
                 // Show Nexus mod download column, if user is premium
-                _viewModel.ShowInstalls = Program.settings.NexusDetails.IsPremium;
+                _viewModel.ShowInstalls = true;
 
                 // Check the installed collections for a newer revision. Awaited rather than fired off, so the count
                 // it produces is in place before anything reads it
@@ -2946,6 +2945,13 @@ namespace Stardrop.Views
             var modDownloadLink = await Nexus.Client.GetFileDownloadLink(modId.Value, modFile.Id, serverName: EnumParser.GetDescription(Program.settings.PreferredNexusServer));
             if (modDownloadLink is null)
             {
+                if (Program.settings.NexusDetails is not null && Program.settings.NexusDetails.IsPremium is false)
+                {
+                    var slowDownloadUrl = NexusClient.GetSlowDownloadUrl(modId.Value, modFile.Id);
+                    Toolkit.OpenBrowser(slowDownloadUrl);
+                    mod.InstallState = InstallState.Unknown;
+                    return null;
+                }
                 await CreateWarningWindow(String.Format(Program.translation.Get("ui.warning.failed_nexus_install"), mod.Name), Program.translation.Get("internal.ok"));
                 mod.InstallState = InstallState.Unknown;
                 return null;
