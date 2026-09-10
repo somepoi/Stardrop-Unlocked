@@ -336,3 +336,5 @@ ASALocalRun/
 
 # Build output
 published/
+*.zip.part_*
+*.zip
